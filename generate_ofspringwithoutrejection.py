@@ -33,11 +33,11 @@ def chose_mb(mean_m,mean_b,row):
         return 'B'
 # Generating offspring
 total = mal_count * ben_count * 2
-row_count = 0
 mcount = 0
 bcount = 0
 for m in range(mal_count):
     df = pd.DataFrame(columns=['Diagnosis']+malignant.columns.tolist(),index=range(total))
+    row_count=0
     for b in range(ben_count):
         rand_idx = rand_sequence()
         temp_m = malignant.iloc[m].values
@@ -58,7 +58,7 @@ for m in range(mal_count):
         row_count+=1
         df.iloc[row_count]=[diag2] + temp_m.tolist()
         row_count+=1
-    df.to_csv('my_csv3_90.csv', mode='a', header=False,index=False)
+    df.to_csv('my_csv1_70.csv', mode='a', header=False,index=False)
     mal_percent = (mcount*100)/((m+1)*(b+1)*2)
     ben_percent = (bcount*100)/((m+1)*(b+1)*2)
     print(

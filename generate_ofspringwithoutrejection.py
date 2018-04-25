@@ -31,12 +31,11 @@ def chose_mb(mean_m,mean_b,row):
     else:
         return 'B'
 # Generating offspring
-total = mal_count * ben_count * 2
-row_count=0
+total = mal_count * ben_count
 mcount = 0
 bcount = 0
+dflist=[]
 for m in range(mal_count):
-    dflist = []
     for b in range(ben_count):
         rand_idx = rand_sequence()
         temp_m = malignant.iloc[m].values
@@ -57,8 +56,6 @@ for m in range(mal_count):
         temp_m = [diag2] + temp_m.tolist()
         dflist.append(temp_b)
         dflist.append(temp_m)
-    df = pd.DataFrame(dflist,columns=['Diagnosis']+malignant.columns.tolist())
-    df.to_csv('my_csv1_70.csv', mode='a', header=False,index=False)
     mal_percent = (mcount*100)/((m+1)*(b+1)*2)
     ben_percent = (bcount*100)/((m+1)*(b+1)*2)
     print(
@@ -67,3 +64,12 @@ for m in range(mal_count):
         ' Malignant : ' + str( mal_percent ) + '%'
         ,end='\r'
     )
+    
+df = pd.DataFrame(dflist,columns=['Diagnosis']+malignant.columns.tolist())
+Xlabel = df.iloc[:,0:1]
+Ylabel = df.iloc[:,1:]
+
+Xlabel.to_csv('libsvmX_70.csv', mode='a', header=False,index=False)
+Ylabel.to_csv('libsvmY_70.csv', mode='a', header=False,index=False)
+df.to_csv('libsvm_70.csv', mode='a', header=False,index=False)
+        

@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import random
+import csv
 from sklearn.datasets import dump_svmlight_file
 from scipy.sparse import csr_matrix
 
@@ -36,12 +37,16 @@ def chose_mb(mean_m,mean_b,row):
 # Generating offspring
 total = mal_count * ben_count
 
+# statistics for all values
+statistics = []
+
 # Iterating for all percentages from 50% to 100%
-for per in range(50):
+for per in range( 49 ):
     # Checking every combinations
     mcount = 0
     bcount = 0
     dflist = []
+    iterstat = []
     for m in range(mal_count):
         for b in range(ben_count):
             rand_idx = rand_sequence()
@@ -72,7 +77,11 @@ for per in range(50):
             ' Malignant : ' + str( mal_percent ) + '%'
             ,end='\r'
         )
+    iterstat.append( per + 50 )
+    iterstat.append( ben_percent )
+    iterstat.append( mal_percent )
     # Writing all files with various percentages       
+    statistics.append(iterstat)
     df = pd.DataFrame(dflist,columns=['Diagnosis']+malignant.columns.tolist())
     Xlabel = df.iloc[:,0:1]
     label = csr_matrix( Xlabel.values )
@@ -81,4 +90,8 @@ for per in range(50):
     Xlabel.to_csv('libsvmX_'+ str( per + 50 ) +'.csv', mode='a', header=False,index=False)
     Ylabel.to_csv('libsvmY_' + str( per + 50 ) + '.csv', mode='a', header=False,index=False)
     df.to_csv('libsvm_' +  str( per + 50 ) + '.csv', mode='a', header=False,index=False)
-        
+
+# Writing generation ststistics to a file    
+out = csv.writer(open("generation_statistics.csv","w"), delimiter=',',quoting=csv.QUOTE_ALL)
+out.writerow(statistics)
+

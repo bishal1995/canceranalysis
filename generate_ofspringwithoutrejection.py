@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import random
+from sklearn.datasets import dump_svmlight_file
+from scipy.sparse import csr_matrix
 
 # Reading data
 cancer = pd.read_csv('dataset.csv').drop(['id','Unnamed: 32'],axis=1).fillna('0')
@@ -27,9 +29,9 @@ def chose_mb(mean_m,mean_b,row):
     m_count = val.sum()
     percent = (m_count*100)/no_params
     if( percent > 70.00 ):
-        return 'M'
+        return 1
     else:
-        return 'B'
+        return -1
 # Generating offspring
 total = mal_count * ben_count
 mcount = 0
@@ -44,11 +46,11 @@ for m in range(mal_count):
             temp_b[k],temp_m[k]=temp_m[k],temp_b[k]
         diag1 = chose_mb(mean_m,mean_b,temp_b)
         diag2 = chose_mb(mean_m,mean_b,temp_m)
-        if( diag1 == 'M' ):
+        if( diag1 == 1 ):
             mcount+=1
         else:
             bcount+=1
-        if( diag2 == 'M' ):
+        if( diag2 == 1 ):
             mcount+=1
         else:
             bcount+=1
@@ -67,7 +69,9 @@ for m in range(mal_count):
     
 df = pd.DataFrame(dflist,columns=['Diagnosis']+malignant.columns.tolist())
 Xlabel = df.iloc[:,0:1]
+label = csr_matrix( Xlabel.values )
 Ylabel = df.iloc[:,1:]
+dump_svmlight_file(Ylabel,label,'libsvm_70.txt')
 
 Xlabel.to_csv('libsvmX_70.csv', mode='a', header=False,index=False)
 Ylabel.to_csv('libsvmY_70.csv', mode='a', header=False,index=False)
